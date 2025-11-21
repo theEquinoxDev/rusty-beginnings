@@ -1,0 +1,14 @@
+# Ignore Rust build artifacts
+target/
+**/target/
+
+# Windows junk
+Thumbs.db
+ehthumbs.db
+
+# Backup files
+*.old
+*.bak
+
+# VSCode
+.vscode/
