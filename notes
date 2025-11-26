@@ -1,0 +1,227 @@
+# Memory Management in Rust
+
+When we run an program in any language, it allocates and deallocates memory on the RAM. In languages like C and C++, developers have to manually manage memory using functions like `malloc`, `free`, `new`, and `delete`. This can lead to issues such as memory leaks, dangling pointers, and buffer overflows.
+
+There are 3 popular ways of doing memory management:
+
+1. **Garbage Collectors**: Languages like Java, Python, and JavaScript use garbage collectors to automatically manage memory. The garbage collector periodically checks for objects that are no longer in use and frees up the memory they occupy. While this approach simplifies memory management for developers, it can introduce performance overhead due to the periodic checks and pauses in program execution. also, can't do manual memory management.
+
+2. **Manual Memory Management**: Languages like C and C++ require developers to manually allocate and deallocate memory. This approach gives developers fine-grained control over memory usage but increases the risk of memory-related bugs, such as memory leaks and dangling pointers. Learning curve is high since we have to do manual memory management.
+
+3. **The Rust Way**: Rust uses a unique approach to memory management that combines the benefits of both garbage collection and manual memory management. Rust employs a system of ownership with rules that the compiler checks at compile time. This system ensures memory safety without the need for a garbage collector, thus avoiding runtime overhead. Developers can manage memory efficiently while minimizing the risk of memory-related bugs. it makes it extremely safe to memory errors. rust does not have a garbage collector.
+
+## Jargons in Rust
+
+
+1. Mutability
+   Immutable variables represent variables whose value can't be changed once assigned. In Rust, variables are immutable by default, meaning that once a value is bound to a variable, it cannot be altered. This immutability promotes safer code by preventing unintended side effects and making it easier to reason about the program's behavior. If you need to change the value of a variable, you must explicitly declare it as mutable using the `mut` keyword. This design choice encourages developers to think carefully about when and where changes to data are necessary, leading to more predictable and maintainable code.
+
+2. Stack & Heap
+   Stack-Fast allocation and deallocation. rust uses stack for most primitive data types and for data where the size is known at compile time. (eg: numbers). The stack stores values in the order it gets them and removes the values in the opposite order. This is referred to as last in, first out. Adding data is called pushing onto the stack, and removing data is called popping off the stack. All data stored on the stack must have a known, fixed size. Data with an unknown size at compile time or a size that might change must be stored on the heap instead.
+
+   Heap-used for data where the size is not known at compile time or for large data structures like vectors and strings. Allocation and deallocation is slower compared to stack. The heap is less organized: when you put data on the heap, you request a certain amount of space. The memory allocator finds an empty spot in the heap that is big enough, marks it as being in use, and returns a pointer, which is the address of that location. This process is called allocating on the heap and is sometimes abbreviated as just allocating (pushing values onto the stack is not considered allocating). Because the pointer to the heap is a known, fixed size, you can store the pointer on the stack, but when you want the actual data, you must follow the pointer. 
+
+3. Ownership
+
+   Ownership is a set of rules that govern how a Rust program manages memory. Ownership is based on three main principles:
+   - Each value in Rust has an owner.
+   - There can only be one owner at a time.
+   - When the owner goes out of scope, the value will be dropped.
+
+   When a variable is created, it becomes the owner of the value it holds. When the variable goes out of scope, Rust automatically calls the `drop` function to free the memory associated with that value. This ensures that memory is automatically cleaned up when it is no longer needed, preventing memory leaks.
+
+ ## Variable scope
+ A scope is the range within a program where a variable is valid and can be accessed. 
+
+  {
+   let s = "hello"; // s is valid from this point forward
+   // do stuff with s
+  } // this scope is now over, and s is no longer valid 
+
+ ## The String Type 
+ This type manages data allocated on the heap and as such is able to store an amount of text that is unknown to us at compile time. You can create a String from a string literal using the from function, like so:
+
+   let s = String::from("hello");
+
+  -- Reason for why String can be mutated but string literals can't --
+  
+   In the case of a string literal, we know the contents at compile time, so the text is hardcoded directly into the final executable. This is why string literals are fast and efficient. However, because the text is hardcoded, we cannot change it at runtime, making string literals immutable.
+   On the other hand, a String is stored on the heap, which allows it to grow and shrink in size as needed at runtime. This flexibility comes with a performance cost, as heap allocation and deallocation are generally slower than stack operations. However, this trade-off is necessary for cases where we need to work with dynamic or large amounts of text that cannot be determined at compile time.
+
+   -- In Rust, memory is automatically returned once the variable that owns it goes out of scope.
+   -- When a variable goes out of scope, Rust calls a special function for us. This function is called drop, and it’s where the author of String can put the code to return the memory. Rust calls drop automatically at the closing curly bracket.
+
+   let x = 5; 
+   let y = x; 
+   In this example, both x and y are stored on the stack. When we assign x to y, Rust makes a copy of the value in x and stores it in y. Both variables are independent of each other, and changing one will not affect the other.
+
+   let s1 = String::from("hello");
+   let s2 = s1;
+   In this example, s1 is a String stored on the heap. When we assign s1 to s2, Rust does not make a copy of the String data. Instead, it moves the ownership of the String from s1 to s2. After this assignment, s1 is no longer valid, and trying to use it will result in a compile-time error. This behavior prevents double free errors and ensures memory safety. 
+
+   -- double free error: when two variables try to free the same memory location. Freeing memory twice can lead to memory corruption, which can potentially lead to security vulnerabilities.
+
+   To ensure memory safety, after the line let s2 = s1;, Rust considers s1 as no longer valid. Therefore, Rust doesn’t need to free anything when s1 goes out of scope. 
+
+   -- move: When we assign s1 to s2, the ownership of the String is moved from s1 to s2. This means that s2 is now the owner of the String, and s1 is no longer valid. This is called a move.
+
+   -- clone: If we want to deeply copy the heap data, we can use the clone method. This will create a new String with its own copy of the data on the heap. Rust will never automatically create deep copies of data.
+
+   >> When you assign a completely new value to an existing variable, Rust will call drop and free the original value’s memory immediately.
+
+       let mut s = String::from("hello");
+    s = String::from("ahoy");
+
+    println!("{s}, world!"); // This will print "ahoy, world!"
+
+    -- copy: in simple terms, the Copy trait allows for bitwise copying of data. Types that implement the Copy trait can be duplicated simply by copying their bits, without needing to call any special methods or functions. This is in contrast to types that do not implement the Copy trait, which require ownership to be moved or cloned when assigned or passed around.
+
+        let x = 5;
+        let y = x;
+
+        println!("x = {x}, y = {y}");
+      // This will print "x = 5, y = 5" 
+      If a type implements the Copy trait, variables that use it do not move, but rather are trivially copied, making them still valid after assignment to another variable. Rust won’t let us annotate a type with Copy if the type, or any of its parts, has implemented the Drop trait.
+      Some types that implement the Copy trait are:
+      - All integer types, such as u32, i64, etc.
+      - The Boolean type, bool.  
+      - All floating-point types, such as f32 and f64.
+      - The character type, char.
+      - Tuples, but only if they contain types that also implement the Copy trait. For example, (i32, i32) implements Copy, but (i32, String) does not.
+
+      >> Ownership in functions
+      Passing a variable to a function will move or copy, just like any other assignment.
+    
+      fn main() {
+    let s = String::from("hello");  // s comes into scope
+
+    takes_ownership(s);             // s's value moves into the function...
+                              // ... and so is no longer valid here
+    let x = 5;                      // x comes into scope
+    makes_copy(x);                  // Because i32 implements the Copy trait,
+                                    // x does NOT move into the function,
+                                    // so it's okay to use x afterward.
+   } // Here, x goes out of scope, then s. However, because s's value was moved,
+   // nothing special happens.
+
+   fn takes_ownership(some_string: String) { // some_string comes into scope
+      println!("{some_string}");
+   } // Here, some_string goes out of scope and `drop` is called. The backing
+   // memory is freed.
+
+   fn makes_copy(some_integer: i32) { // some_integer comes into scope
+      println!("{some_integer}");
+   } // Here, some_integer goes out of scope. Nothing special happens.
+
+
+## Return Values and Scope
+   Returning values can also transfer ownership. 
+   fn main() {
+    let s1 = gives_ownership();        // gives_ownership moves its return
+                                       // value into s1
+
+    let s2 = String::from("hello");    // s2 comes into scope
+
+    let s3 = takes_and_gives_back(s2); // s2 is moved into
+                                       // takes_and_gives_back, which also
+                                          // moves its return value into s3
+   } // Here, s3 goes out of scope and is dropped. s2 was moved, so nothing
+   // happens. s1 goes out of scope and is dropped.
+
+   fn gives_ownership() -> String {       // gives_ownership will move its
+                                          // return value into the function
+                                          // that calls it
+
+    let some_string = String::from("yours"); // some_string comes into scope
+
+    some_string                        // some_string is returned and
+                                       // moves out to the calling
+                                       // function
+   }
+
+   // This function takes a String and returns a String.
+   fn takes_and_gives_back(a_string: String) -> String {
+      // a_string comes into
+      // scope
+
+      a_string  // a_string is returned and moves out to the calling function
+   }
+
+
+>> The ownership of a variable follows the same pattern every time: assigning a value to another variable moves it. When a variable that includes data on the heap goes out of scope, the value will be cleaned up by drop unless ownership of the data has been moved to another variable.
+
+>> Rust lets us return multiple values using tuples.
+
+   fn calculate_length(s: String) -> (String, usize) {
+    let length = s.len(); // len() returns the length of a String
+
+    (s, length)
+   }
+
+   let s1 = String::from("hello");
+
+   let (s2, len) = calculate_length(s1);
+
+   println!("The length of '{}' is {}.", s2, len);
+
+
+   ## Summary by taking an example of Rihanna 
+
+   Rihanna = the value
+   Boyfriend = the owner
+   She can have only one boyfriend at a time
+   Giving her to someone else transfers ownership
+   The old boyfriend cannot access her anymore
+   A function can become her owner if you pass her in
+   If a function returns her, ownership comes back
+   Simple types like numbers don’t move — they copy
+
+4. Borrowing & References
+
+   Borrowing is a way to let multiple parts of your code access the same data without taking ownership of it. References allow you to read or modify the data without transferring ownership. 
+
+   >> References mean giving the address of a string instead of the ownership of the string itself over to a function. 
+   fn main() {
+    let s1 = String::from("hello");
+    let s2 = &s1; // s2 is a reference to s1
+      println!("s1 is {s1} and s2 is {s2}");
+
+   >> You can transfer ownership of variables to fns. By passing a reference to the string to the function  takes_ownership, the ownership of the string remains with the original variable, in the main function. This allows you to use my_string again after the function call. 
+
+   fn main () {
+      let my_string = String::from("hello");
+      borrow_variable(&my_string); // pass a reference to my_string
+      println!("my_string is still valid: {}", my_string); // valid bcz ownership was not transferred
+   }
+   fn borrow_variable(some_string: &String) {
+      println!("The string is: {}", some_string);  // some_string is borrowed and not moved 
+   }
+
+   ### Mutable References
+   By default, references are immutable, meaning you cannot change the data they point to. However, Rust allows you to create mutable references using the `mut` keyword. Mutable references let you modify the data they point to while still borrowing it.
+       
+   fn main() {
+    let mut s = String::from("hello");
+    change(&mut s); // pass a mutable reference to s
+    println!("s after change: {}", s); // s is now "hello, world"
+   }
+   fn change(some_string: &mut String) {
+    some_string.push_str(", world"); // modify the borrowed string
+   }
+
+   >> Rules for References
+   1. There can be many immutable references at the same time. 
+   2. There can be only one mutable reference at a time.
+   3. If There is a mutable reference, there can be no immutable references at all. 
+
+   fn main() {
+    let mut s = String::from("hello");
+    let s2 = &s; // no problem
+    let s3 = &s; // no problem
+   // let s4 = &mut s; // BIG PROBLEM -- cannot borrow `s` as mutable because it is also borrowed as immutable
+      println!("{}, {}", s2, s3);
+   } 
+   In this example, we create two immutable references to the string `s`. However, if we try to create a mutable reference `s4` while `s2` and `s3` are still in scope, Rust will throw a compile-time error. This is because having both mutable and immutable references to the same data at the same time can lead to data races and inconsistencies. To fix this, we need to ensure that all immutable references go out of scope before creating a mutable reference.
+
+   >> This is because: a. if someone makes an immutable reference, they don't expect the value to change suddenly. 
+                       b. If more than one mutable references happen, there is a possibility of data race and synchronization issues.  
