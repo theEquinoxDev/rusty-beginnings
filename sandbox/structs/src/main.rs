@@ -73,3 +73,24 @@ fn struct_update_syntax_example() {
 
 // ## Using Tuple Structs Without Named Fields to Create Different Types
 
+// Tuple structs are a special kind of struct in Rust that look like tuples but have a struct name.
+// They do not have named fields — only types and index-based access.
+
+struct Color(u8, u8, u8);
+struct Point(i32, i32, i32);
+fn tuple_structs_example() {
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+    println!("Black Color - R: {}, G: {}, B: {}", black.0, black.1, black.2);
+    println!("Origin Point - X: {}, Y: {}, Z: {}", origin.0, origin.1, origin.2);
+}
+
+// ## Unit-Like Structs Without Any Fields
+
+Unit-like structs are structs without any fields—they have no data inside them. They are useful when you need to implement a trait on some type but don’t need to store any data.
+
+example - struct Marker; 
+
+fn main () {
+    let m = Marker; 
+}
