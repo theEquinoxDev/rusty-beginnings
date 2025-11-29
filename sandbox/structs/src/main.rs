@@ -94,3 +94,111 @@ example - struct Marker;
 fn main () {
     let m = Marker; 
 }
+
+
+// Method Syntax
+// Methods are similar to functions. We declare them with fn keyword, and they can take parameters and return values. Unlike functions, methods are defined within the context of a struct (or enum or trait object) and have access to the data of the instance they are called on. 
+
+// Defining Methods (Implementing Structs)
+// To define methods for a struct, we use the impl keyword followed by the struct name.
+
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height  // we dont' need a return statement here because the last line does not have a semicolon. 
+    }
+    fn width(&self) -> bool {
+        self.width > 0
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} ",
+        rect1.area()
+    );
+     if rect1.width() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.width); // Accessing the width field directly
+        // here if we call rect1.width(), it will call the method width() defined in impl block. And if we call rect1.width without parentheses, it will access the width field directly. width() will return true if width is greater than 0. width without parentheses will return the actual width value.
+    }
+}
+
+// Here, we defined a method named area for the Rectangle struct. The &self parameter is a reference to the instance of the struct on which the method is called. This allows us to access the fields of that instance within the method. In the main function, we create an instance of Rectangle named rect1 and call the area method on it to calculate and print the area. 
+
+// Note: Methods can also take additional parameters, just like regular functions. The first parameter is always &self (or &mut self for mutable methods), followed by any other parameters you want to include. 
+
+// Where’s the -> Operator?
+
+// In Rust, the -> operator is used in function and method signatures to indicate the return type of the function or method. It separates the parameter list from the return type. For example, in the method area(&self) -> u32, the -> u32 indicates that this method returns a value of type u32.
+
+// ## Methods with More Parameters
+// Methods can take additional parameters beyond &self. Here’s an example:
+
+impl Rectangle {
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rect2 = Rectangle {
+        width: 10,
+        height: 40,
+    };
+    let rect3 = Rectangle {
+        width: 60,
+        height: 45,
+    };
+
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2)); // true
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3)); // false
+}
+// In this example, we defined a method named can_hold that takes another Rectangle as a parameter. The method checks if the current rectangle (self) can completely contain the other rectangle (other). In the main function, we create three Rectangle instances and use the can_hold method to check if rect1 can hold rect2 and rect3. The results printed will be true for rect2 and false for rect3.
+
+// ## Associated Functions
+// Associated functions are functions that are defined within the context of a struct (or enum or trait object) but do not take &self or &mut self as their first parameter. They are often used as constructors or utility functions related to the struct.
+impl Rectangle {
+    fn square(size: u32) -> Rectangle {
+        Rectangle {
+            width: size,
+            height: size,
+        }
+    }
+}
+
+fn main() {
+    let square = Rectangle::square(20);
+    println!(
+        "The area of the square is {} ",
+        square.area() // prints 400
+    );
+}
+// In this example, we defined an associated function named square that creates a Rectangle instance where the width and height are equal, effectively creating a square. We call this function using the :: syntax on the Rectangle struct. In the main function, we create a square with a size of 20 and print its area using the area method.
+
+// ## Multiple impl Blocks
+// You can define multiple impl blocks for a single struct. This allows you to organize methods and associated functions into separate sections if desired.
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+
