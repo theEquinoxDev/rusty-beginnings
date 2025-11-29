@@ -1,5 +1,7 @@
 // ## Structs
-//    Structs are custom data types that let you group related data together. You can define your own structs to represent complex data structures in your programs. It is similar to objects in JavaScript.
+// Structs are custom data types that let you group related data together.
+// You can define your own structs to represent complex data structures in
+// your programs. It is similar to objects in JavaScript.
 
 struct User {
     active: bool,
@@ -8,7 +10,7 @@ struct User {
     sign_in_count: u64,
 }
 
-fn main() {
+fn basic_struct_example() {
     let user1 = User {
         active: true,
         username: String::from("someusername123"),
@@ -21,8 +23,9 @@ fn main() {
     println!("Sign-in count: {}", user1.sign_in_count);
 }
 
->> Mutable Structs
-// You can make a struct instance mutable by using the mut keyword. This allows you to change the values of its fields after it has been created.
+// >> Mutable Structs
+// You can make a struct instance mutable by using the `mut` keyword. This
+// allows you to change the values of its fields after it has been created.
 
 fn mutable_struct_example() {
     let mut user2 = User {
@@ -35,10 +38,11 @@ fn mutable_struct_example() {
     println!("Updated Email: {}", user2.email);
 }
 
--- If the entire struct is mutable, all its fields are mutable as well.
+// -- If the entire struct is mutable, all its fields are mutable as well.
 
->> Structs with Functions parameters
-// You can define functions that take structs as parameters to manipulate or access their data.
+// >> Structs with Function parameters
+// You can define functions that take structs as parameters to manipulate or
+// access their data.
 
 fn build_user(email: String, username: String) -> User {
     User {
@@ -52,7 +56,9 @@ fn build_user(email: String, username: String) -> User {
 // In this example, the build_user function creates and returns a User struct instance. Since the parameters and fields have the same names, we can use field init shorthand syntax. Here, we’re creating a new instance of the User struct, which has a field named email. We want to set the email field’s value to the value in the email parameter of the build_user function. Because the email field and the email parameter have the same name, we only need to write email rather than email: email.
 
 // Creating Instances from Other Instances with Struct Update Syntax
-// You can create a new instance of a struct by using the values from another instance. This is done using the struct update syntax, which is similar to object spread syntax in JavaScript.
+// You can create a new instance of a struct by using the values from another
+// instance. This is done using the struct update syntax, which is similar to
+// object spread syntax in JavaScript.
 
 fn struct_update_syntax_example() {
     let user1 = User {
@@ -72,9 +78,8 @@ fn struct_update_syntax_example() {
 // Note: Struct update syntax only works when the struct being copied from is not moved. If the struct contains fields that do not implement the Copy trait (like String), those fields will be moved, and the original instance will no longer be usable.
 
 // ## Using Tuple Structs Without Named Fields to Create Different Types
-
-// Tuple structs are a special kind of struct in Rust that look like tuples but have a struct name.
-// They do not have named fields — only types and index-based access.
+// Tuple structs are a special kind of struct in Rust that look like tuples but
+// have a struct name. They do not have named fields — only types and index-based access.
 
 struct Color(u8, u8, u8);
 struct Point(i32, i32, i32);
@@ -86,13 +91,14 @@ fn tuple_structs_example() {
 }
 
 // ## Unit-Like Structs Without Any Fields
+// Unit-like structs are structs without any fields—they have no data inside them.
+// They are useful when you need to implement a trait on some type but don’t
+// need to store any data.
 
-Unit-like structs are structs without any fields—they have no data inside them. They are useful when you need to implement a trait on some type but don’t need to store any data.
+struct Marker;
 
-example - struct Marker; 
-
-fn main () {
-    let m = Marker; 
+fn unit_like_struct_example() {
+    let _m = Marker;
 }
 
 
@@ -117,7 +123,7 @@ impl Rectangle {
     }
 }
 
-fn main() {
+fn rectangle_methods_example() {
     let rect1 = Rectangle {
         width: 30,
         height: 50,
@@ -127,9 +133,8 @@ fn main() {
         "The area of the rectangle is {} ",
         rect1.area()
     );
-     if rect1.width() {
-        println!("The rectangle has a nonzero width; it is {}", rect1.width); // Accessing the width field directly
-        // here if we call rect1.width(), it will call the method width() defined in impl block. And if we call rect1.width without parentheses, it will access the width field directly. width() will return true if width is greater than 0. width without parentheses will return the actual width value.
+    if rect1.width() {
+        println!("The rectangle has a nonzero width; it is {}", rect1.width);
     }
 }
 
@@ -149,22 +154,13 @@ impl Rectangle {
         self.width > other.width && self.height > other.height
     }
 }
-fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
-    };
-    let rect2 = Rectangle {
-        width: 10,
-        height: 40,
-    };
-    let rect3 = Rectangle {
-        width: 60,
-        height: 45,
-    };
+fn rectangle_compare_example() {
+    let rect1 = Rectangle { width: 30, height: 50 };
+    let rect2 = Rectangle { width: 10, height: 40 };
+    let rect3 = Rectangle { width: 60, height: 45 };
 
-    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2)); // true
-    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3)); // false
+    println!("Can rect1 hold rect2? {}", rect1.can_hold(&rect2));
+    println!("Can rect1 hold rect3? {}", rect1.can_hold(&rect3));
 }
 // In this example, we defined a method named can_hold that takes another Rectangle as a parameter. The method checks if the current rectangle (self) can completely contain the other rectangle (other). In the main function, we create three Rectangle instances and use the can_hold method to check if rect1 can hold rect2 and rect3. The results printed will be true for rect2 and false for rect3.
 
@@ -179,26 +175,24 @@ impl Rectangle {
     }
 }
 
-fn main() {
+fn rectangle_associated_fn_example() {
     let square = Rectangle::square(20);
-    println!(
-        "The area of the square is {} ",
-        square.area() // prints 400
-    );
+    println!("The area of the square is {} ", square.area());
 }
 // In this example, we defined an associated function named square that creates a Rectangle instance where the width and height are equal, effectively creating a square. We call this function using the :: syntax on the Rectangle struct. In the main function, we create a square with a size of 20 and print its area using the area method.
 
 // ## Multiple impl Blocks
 // You can define multiple impl blocks for a single struct. This allows you to organize methods and associated functions into separate sections if desired.
-impl Rectangle {
-    fn area(&self) -> u32 {
-        self.width * self.height
-    }
-}
+// (Removed duplicate impl blocks; see above for the primary impls)
 
-impl Rectangle {
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.width > other.width && self.height > other.height
-    }
+fn main() {
+    basic_struct_example();
+    mutable_struct_example();
+    struct_update_syntax_example();
+    tuple_structs_example();
+    unit_like_struct_example();
+    rectangle_methods_example();
+    rectangle_compare_example();
+    rectangle_associated_fn_example();
 }
 

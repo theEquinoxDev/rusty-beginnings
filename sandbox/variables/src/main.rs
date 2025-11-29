@@ -1,8 +1,8 @@
 fn main() {
     // #Number Types
 
-    let x: i32 = 5; // integer variable of unsigned 32 bit type
-    let y: u32 = 10; // integer variable of signed 32 bit type
+    let x: i32 = 5; // signed 32-bit integer
+    let y: u32 = 10; // unsigned 32-bit integer
     let z: f32 = 3.14; // floating-point variable of 32 bit type
     println!("x: {}, y: {}, z: {}", x, y, z);
 
