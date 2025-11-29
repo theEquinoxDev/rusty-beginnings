@@ -1,41 +1,45 @@
-// fn main() {
-    //    let is_even: bool = true;
+// Simple if/else and basic loops
+fn if_and_basic_loops_example() {
+    let is_even: bool = true;
 
-    //    if is_even {
-    //        println!("The number is even.");
-    //    } else {
-    //        println!("The number is odd.");
-    //    }
+    if is_even {
+        println!("The number is even.");
+    } else {
+        println!("The number is odd.");
+    }
 
     // #Loops
-    //    for i in 0..10 {
-    //      print!(" {}", i); // prints numbers from 0 to 9
-    //    }
+    for i in 0..10 {
+        print!(" {}", i); // prints numbers from 0 to 9
+    }
+    println!("");
+}
 
-    // we might want to iterate over some collections like an array, map, strings, etc.
-//     let sentence = String::from("my name is aditya");
-//     let first_word = get_first_word(sentence);
-//     println!("The first word is: {}", first_word);
-// }
+// Iterate over collections and extract first word
+fn get_first_word(sentence: String) -> String {
+    let mut ans = String::from("");
 
-// fn get_first_word(sentence: String) -> String {
-//     let mut ans = String::from("");
+    for ch in sentence.chars() {
+        ans.push(ch);
+        if ch == ' ' {
+            break;
+        }
+    }
+    ans
+}
 
-//     for char in sentence.chars() {
-//         ans.push_str(char.to_string().as_str());
-//         if char == ' ' {
-//             break;
-//         }
-//     }
-//     return ans;
-// }
+fn first_word_example() {
+    let sentence = String::from("my name is aditya");
+    let first_word = get_first_word(sentence);
+    println!("The first word is: {}", first_word);
+}
 
-// Using If in a let statement
-
-// let condition = true;
-// let number = if condition { 5 } else { 6 };
-
-// println!("The value of number is: {number}");
+// Using if in a let statement
+fn if_in_let_example() {
+    let condition = true;
+    let number = if condition { 5 } else { 6 };
+    println!("The value of number is: {number}");
+}
 
 // ................................................
 
@@ -43,7 +47,8 @@
 
 // 1. Loop
 // The loop keyword tells Rust to execute a block of code over and over again forever or until you explicitly tell it to stop.
-// fn main() {
+// Basic infinite loop (commented to avoid running forever)
+// fn infinite_loop_example() {
 //     loop {
 //         println!("again!");
 //     }
@@ -54,7 +59,7 @@
 
 
 
-fn main() { 
+fn loop_labels_example() { 
     let mut count = 0;
     'counting_up: loop { // label for the outer loop
         println!("count = {count}");
@@ -84,7 +89,7 @@ fn main() {
 
 // 2. While Loop
 
-fn main() {
+fn while_loop_example() {
     let mut number = 3;
 
     while number != 0 {
@@ -97,7 +102,7 @@ fn main() {
 }
 
 // 3. For Loop
-fn main() {
+fn for_array_example() {
     let a = [10, 20, 30, 40, 50];
 
     for element in a {
@@ -105,9 +110,19 @@ fn main() {
     }
 }
 
-fn main() {
+fn countdown_for_rev_example() {
     for number in (1..4).rev() {
         println!("{number}!");
     }
     println!("LIFTOFF!!!");
+}
+
+fn main() {
+    if_and_basic_loops_example();
+    first_word_example();
+    if_in_let_example();
+    loop_labels_example();
+    while_loop_example();
+    for_array_example();
+    countdown_for_rev_example();
 }
