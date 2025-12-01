@@ -225,3 +225,33 @@ There are 3 popular ways of doing memory management:
 
    >> This is because: a. if someone makes an immutable reference, they don't expect the value to change suddenly. 
                        b. If more than one mutable references happen, there is a possibility of data race and synchronization issues.  
+
+
+### Error Handling 
+different languages have different ways of handling errors. Some languages use exceptions, while others use error codes. Rust takes a different approach by using the Result enum to handle recoverable errors.
+
+   enum Result<T, E> { // here T, E are generics 
+      Ok(T), // Represents a successful outcome, containing a value of type T
+      Err(E), // Represents an error, containing a value of type E
+   }
+
+   fn main () {
+      let res = fs::read_to_string("hello.txt");
+
+      match res {
+         Ok(contents) => println!("File contents: {}", contents),
+         Err(e) => println!("Error reading file: {}", e),
+      }
+   }
+
+
+
+
+ ##  Cargo packages and external dependencies
+
+nodejs - npm 
+rust - cargo 
+
+cargo is a package manager and build system for Rust. It helps you manage your Rust projects, including dependencies, building, and testing.
+
+example - cargo add rand gives us a random number generator
