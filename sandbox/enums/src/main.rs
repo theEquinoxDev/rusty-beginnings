@@ -123,3 +123,39 @@ fn main() {
     match_message_example();
 }
 
+// ## Matches are Exhaustive - 
+// this means that all possible cases must be handled. If you forget to handle a case, the compiler will throw an error. This ensures that your code is robust and can handle all possible inputs. This must be done especially in the case of Option<T> where you have to handle both Some and None cases.
+
+// ## Catch-All Patterns and the _ Placeholder 
+// In Rust, when using match statements, you may not always want to specify every possible case explicitly. In such situations, you can use a catch-all pattern to handle any cases that are not explicitly matched. The underscore (_) is used as a placeholder for this purpose. It matches any value that hasn't been matched by previous arms in the match statement. This is particularly useful when you want to provide a default behavior for all other cases without having to list them individually.
+// Here's an example:
+// fn match_number_example() {
+//     let number = 13;
+//     match number {
+//         1 => println!("One!"),
+//         2 | 3 | 5 | 7 | 11 => println!("This is a prime"),
+//         13..=19 => println!("A teen"),
+//         _ => println!("Ain't special"),
+//     }
+// }
+// In this example, the last arm of the match statement uses the underscore (_) to catch any numbers that do not match the previous patterns. This ensures that all possible values are handled, making the code more robust and preventing potential runtime errors due to unhandled cases.
+
+// Concise Control Flow with if let and let else 
+// In Rust, the if let and let else constructs provide a more concise way to handle specific patterns in certain situations, particularly when working with enums like Option<T> or Result<T, E>. These constructs allow you to match a single pattern while ignoring others, making your code cleaner and easier to read.
+// The if let construct is used when you want to execute code only for a specific pattern, while ignoring all other cases. Here's an example using Option<T>:
+// let some_value = Some(5);
+// if let Some(x) = some_value {
+//     println!("The value is: {}", x);
+// } else {
+//     println!("No value found.");
+// }
+// In this example, if some_value is Some, the value is extracted and printed. If it's None, the else block is executed.
+// The let else construct, introduced in Rust 1.65, allows you to handle the "else" case more explicitly when a pattern does not match. Here's an example:
+// let some_value = None;
+// let Some(x) = some_value else {
+//     println!("No value found.");
+//     return;
+// };
+// println!("The value is: {}", x);
+// In this example, if some_value is None, the code inside the else block is executed, and the function returns early. If it's Some, the value is extracted and printed.
+// Both if let and let else constructs help reduce boilerplate code and improve readability when dealing with specific patterns in Rust. They are particularly useful when you only care about one variant of an enum and want to handle it concisely.
