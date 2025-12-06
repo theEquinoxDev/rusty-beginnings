@@ -17,3 +17,20 @@ A crate can come in two parts
   - One library crate
   - One or more binary crates
   - Both a library crate and one or more binary crates
+
+
+## Modules & use
+- Modules let you organize code within a crate into groups for readability and maintainability.
+- Modules also control the scope and privacy of paths, allowing you to restrict access to certain parts of your code.
+- You can define modules using the `mod` keyword, and you can nest  modules within other modules.
+- You can use the `use` keyword to bring paths into scope, making it easier to reference items defined in other modules.
+- You can define modules in the same file or in separate files, depending on your project's organization needs.
+- The `pub` keyword is used to make items public, allowing them to be accessed from outside their module.
+
+## Paths
+- Paths are a way of naming an item, such as a struct, function, or module.
+- Paths can be absolute or relative.
+- An absolute path starts from a crate root and uses the crate name as the first component.
+- A relative path starts from the current module and uses `self`, `super`, or an  identifier in the current module.
+- You can use paths to reference items defined in other modules, making it easier to organize and access your code.
+
