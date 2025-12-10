@@ -18,6 +18,8 @@ A crate can come in two parts
   - One or more binary crates
   - Both a library crate and one or more binary crates
 
+   If a package contains src/main.rs and src/lib.rs, it has two crates: a binary and a library, both with the same name as the package. A package can have multiple binary crates by placing files in the src/bin directory: each file will be a separate binary crate.
+
 
 ## Modules & use
 - Modules let you organize code within a crate into groups for readability and maintainability.
